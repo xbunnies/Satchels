@@ -1,0 +1,10 @@
+settings:
+  prefix: "#ffd8e0&l< #ffdadb&lS#ffdcd5&la#ffddd0&lt#ffdfcb&lc#ffdfcb&lh#ffddd0&le#ffdcd5&ll#ffdadb&ls #ffd8e0&l>"
+
+satchel-item:
+  name: "%satchel-type% Satchel"
+  lore:
+    - "#ffe0c8Capacity: #e0f0ff%satchel-contents% &7/ #e0f0ff%satchel-capacity%"
+    - "#ffe0c8Sell Bonus: #e0f0ff%satchel-sellbonus%"
+    - "#ffe0c8Value: #e0f0ff$%satchel-value%"
+
