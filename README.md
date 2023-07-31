@@ -27,10 +27,11 @@ With the addition of 'Satchels' you can say goodbye to inventory overflow! _as l
 4. Continue to enjoy the clutter-free inventory whilst you use your Satchel!
 
 ## Commands and Permissions 🔒
+_Administrative Permission for commands below `satchels.commands.admin`_
 
-- `/satchel create <type>` - Creates a new Satchel with the set Material to pick-up. (Permission: `satchels.commands.admin`)
-- `/satchel give <player> <type>` - Gives the Satchel to a player. (Permission: `satchels.commands.admin`)
-- `/satchel delete <type>` - Deletes an existing Satchel. (Permission: `satchels.commands.admin`)
+- `/satchel create <type>` - Creates a new Satchel with the set Material to pick-up.
+- `/satchel give <player> <type>` - Gives the Satchel to a player.
+- `/satchel delete <type>` - Deletes an existing Satchel.
 - 
 
 ## Configuration 🛠️
@@ -39,4 +40,4 @@ The `config.yml` file allows you to customize various aspects of the plugin!
 
 ## License 📜
 
-Satchels is released under the [MIT License](link_to_license). 
+Satchels is released under the [MIT License](https://github.com/xbunnies/Satchels/blob/master/LICENSE). 
