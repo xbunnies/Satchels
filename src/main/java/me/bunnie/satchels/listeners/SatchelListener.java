@@ -6,6 +6,7 @@ import me.bunnie.satchels.events.SatchelSellEvent;
 import me.bunnie.satchels.events.SatchelToggleEvent;
 import me.bunnie.satchels.satchel.Satchel;
 import me.bunnie.satchels.utils.ChatUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -13,6 +14,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -131,7 +134,6 @@ public class SatchelListener implements Listener {
                         player.sendMessage(ChatUtils.format("&cUnable to find a valid Economy OR Value Provider."));
                         return;
                     }
-
                     plugin.getEconomyProvider().deposit(player, satchel.getValue());
                     String message = plugin.getConfig().getString("messages.on-sell.success")
                             .replace("%satchel%", satchel.getDisplayName())
@@ -149,6 +151,19 @@ public class SatchelListener implements Listener {
                 }
             }
             break;
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getInventory().getHolder() instanceof Player player)) {
+            return;
+        }
+        if (activeSatchels.containsKey(player.getUniqueId())) {
+            Satchel activeSatchel = activeSatchels.get(player.getUniqueId());
+            if (event.getRawSlot() >= 9 && event.getRawSlot() <= 35) {
+                deactivateSatchel(player, activeSatchel);
+            }
         }
     }
 
