@@ -21,12 +21,15 @@ import java.util.Map;
 
 public class SatchelMenu extends Menu {
 
-    private final Satchels plugin = Satchels.getInstance();
+    private final Satchels plugin;
     private final Satchel satchel;
-    private final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#,###.#");
+    private final DecimalFormat DECIMAL_FORMAT;
 
     public SatchelMenu(Satchel satchel) {
         this.satchel = satchel;
+        this.plugin = Satchels.getInstance();
+        this.DECIMAL_FORMAT = new DecimalFormat("#,###.#");
+
     }
 
     @Override
