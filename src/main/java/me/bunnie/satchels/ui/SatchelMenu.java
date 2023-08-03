@@ -72,8 +72,20 @@ public class SatchelMenu extends Menu {
                 public void onButtonClick(Player player, int slot, ClickType clickType) {
                     String actionName = plugin.getConfig().getString(path + ".action");
                     Action action = Action.valueOf(actionName);
-                    execute(player, action);
-                    update(player, SatchelMenu.this);
+                    switch (action) {
+                        case SELL -> {
+                            plugin.getServer().getPluginManager().callEvent(new SatchelSellEvent(player, satchel));
+                            update(player, SatchelMenu.this);
+                        }
+                        case UPGRADE -> {
+                            update(player, SatchelMenu.this);
+                        }
+                        case COLLECT -> {
+                            player.closeInventory();
+                            new ItemCollectMenu(satchel).getInventory(player);
+                        }
+                        case CLOSE_MENU -> player.closeInventory();
+                    }
                 }
             });
         }
@@ -84,14 +96,4 @@ public class SatchelMenu extends Menu {
     public int getSize(Player player) {
         return plugin.getConfigYML().getInt("menus.satchel.size");
     }
-
-
-    private void execute(Player player, Action action) {
-        switch (action) {
-            case SELL -> plugin.getServer().getPluginManager().callEvent(new SatchelSellEvent(player, satchel));
-            case UPGRADE -> {}
-            case COLLECT -> {}
-        }
-    }
-
 }

@@ -83,3 +83,32 @@ menus:
         material: EMERALD
         action: "SELL"
         slot: 6
+  collect:
+    title: "%satchel-name%"
+    size: 27
+    buttons:
+      confirm:
+        name: "&aConfirm"
+        lore:
+          - "&8Click to collect from your Satchel!"
+        material: LIME_WOOL
+        slot: [0,1,2,9,10,11,18,19,20]
+        action: "COLLECT_CONFIRM"
+      item:
+        name: "%satchel-item.name%"
+        lore:
+          - ""
+          - "&7Contents: &f%satchel-contents%"
+          - "&7Amount: &f%amount%"
+          - ""
+        enchanted: false
+        material: "%satchel-item.material%"
+        slot: 13
+        action: "INCREASE_AMOUNT"
+      cancel:
+        name: "&cCancel"
+        lore:
+          - "&8Click to cancel this collect request!"
+        material: RED_WOOL
+        slot: [6,7,8,15,16,17,24,25,26]
+        action: "CLOSE_MENU"

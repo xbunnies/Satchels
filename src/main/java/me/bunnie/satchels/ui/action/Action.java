@@ -6,5 +6,10 @@ public enum Action {
     UPGRADE,
     SELL,
 
+    CLOSE_MENU,
+
+    INCREASE_AMOUNT,
+    COLLECT_CONFIRM
+
 
 }
