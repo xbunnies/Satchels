@@ -2,3 +2,4 @@ name: Satchels
 version: '${project.version}'
 main: me.bunnie.satchels.Satchels
 api-version: '1.20'
+depend: [Vault]
