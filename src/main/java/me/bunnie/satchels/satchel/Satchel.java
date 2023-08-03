@@ -30,7 +30,6 @@ public class Satchel {
         this.id = UUID.randomUUID();
         this.name = name;
         this.contents = 0;
-
         this.sellBonus = 1.0;
     }
 
@@ -44,7 +43,7 @@ public class Satchel {
         return -1;
     }
 
-    public int getNextCapacityPrice() {
+    public double getNextCapacityPrice() {
         for(String key : Satchels.getInstance().getUpgradesYML().getConfigurationSection("capacity").getKeys(false)) {
             int nextCap = Integer.parseInt(key);
             int price = Satchels.getInstance().getUpgradesYML().getInt("capacity." + key + ".price");
@@ -72,7 +71,8 @@ public class Satchel {
             s = s.replace("%satchel-capacity%", String.valueOf(capacity));
             s = s.replace("%satchel-sellbonus%", String.valueOf(sellBonus));
             s = s.replace("%satchel-target%", targetMaterial.name());
-            s = s.replace("%satchel-value%", String.valueOf(getValue()));
+            s = s.replace("%satchel-value%", String.valueOf(getValue() * getSellBonus()));
+
 
             lore.add(s);
         }

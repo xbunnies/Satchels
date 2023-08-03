@@ -6,4 +6,8 @@ public interface EconomyProvider {
 
     void deposit(Player player, double amount);
 
+    double getPlayerBalance(Player player);
+
+    void withdraw(Player player, double amount);
+
 }

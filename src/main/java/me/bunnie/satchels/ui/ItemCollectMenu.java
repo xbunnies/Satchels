@@ -64,25 +64,26 @@ public class ItemCollectMenu extends Menu {
                                 .setGlow(plugin.getConfig().getBoolean(path + ".enchanted"))
                                 .build();
                     }
+
                     @Override
                     public void onButtonClick(Player player, int slot, ClickType clickType) {
                         String actionName = plugin.getConfig().getString(path + ".action");
                         Action action = Action.valueOf(actionName);
                         switch (action) {
                             case INCREASE_AMOUNT -> {
-                                if(clickType.isLeftClick()) {
+                                if (clickType.isLeftClick()) {
                                     if (amount == satchel.getContents()) return;
                                     if (amount < satchel.getContents()) {
                                         amount++;
                                         update(player, ItemCollectMenu.this);
                                     }
-                                } else if(clickType.isRightClick()) {
-                                    if(amount > 1) amount--;
+                                } else if (clickType.isRightClick()) {
+                                    if (amount > 1) amount--;
                                     update(player, ItemCollectMenu.this);
                                 }
                             }
                             case COLLECT_CONFIRM -> {
-                                if(satchel.getContents() == 0) return;
+                                if (satchel.getContents() == 0) return;
                                 ItemStack itemStack = new ItemStack(satchel.getTargetMaterial());
                                 itemStack.setAmount(amount);
                                 player.getInventory().addItem(itemStack);
@@ -134,25 +135,26 @@ public class ItemCollectMenu extends Menu {
                                     .setGlow(plugin.getConfig().getBoolean(path + ".enchanted"))
                                     .build();
                         }
+
                         @Override
                         public void onButtonClick(Player player, int slot, ClickType clickType) {
                             String actionName = plugin.getConfig().getString(path + ".action");
                             Action action = Action.valueOf(actionName);
                             switch (action) {
                                 case INCREASE_AMOUNT -> {
-                                    if(clickType.isLeftClick()) {
+                                    if (clickType.isLeftClick()) {
                                         if (amount == satchel.getContents()) return;
                                         if (amount < satchel.getContents()) {
                                             amount++;
                                             update(player, ItemCollectMenu.this);
                                         }
-                                    } else if(clickType.isRightClick()) {
-                                        if(amount > 1) amount--;
+                                    } else if (clickType.isRightClick()) {
+                                        if (amount > 1) amount--;
                                         update(player, ItemCollectMenu.this);
                                     }
                                 }
                                 case COLLECT_CONFIRM -> {
-                                    if(satchel.getContents() == 0) return;
+                                    if (satchel.getContents() == 0) return;
                                     ItemStack itemStack = new ItemStack(satchel.getTargetMaterial());
                                     itemStack.setAmount(amount);
                                     player.getInventory().addItem(itemStack);
@@ -180,6 +182,17 @@ public class ItemCollectMenu extends Menu {
                         }
                     });
                 }
+            }
+        }
+
+        for (int i = 0; i < getSize(player); i++) {
+            if(buttons.get(i) == null) {
+                buttons.put(i, new Button() {
+                    @Override
+                    public ItemStack getItem(Player player) {
+                        return new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setName(" ").build();
+                    }
+                });
             }
         }
         return buttons;

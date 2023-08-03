@@ -61,6 +61,7 @@ public class GiveCommand extends SubCommand {
         Satchel satchel = new Satchel(satchelName);
         satchel.setTargetMaterial(Material.valueOf(plugin.getConfigYML().getString("satchels." + satchelName + ".target")));
         satchel.setCapacity(plugin.getConfigYML().getInt("satchels." + satchelName + ".default-capacity"));
+        satchel.setSellBonus(plugin.getConfigYML().getDouble("satchels." + satchelName + ".default-sellbonus"));
 
         String senderMessage = plugin.getConfigYML().getString("messages.on-give.sender")
                 .replace("%satchel%", satchel.getDisplayName())

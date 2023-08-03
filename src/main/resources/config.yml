@@ -8,27 +8,26 @@ satchels:
       - "&7This Satchel picks up %satchel-target%"
       - ""
       - "#ffe0c8Capacity: #e0f0ff%satchel-contents% &7/ #e0f0ff%satchel-capacity%"
-      - "#ffe0c8Sell Bonus: #e0f0ff%satchel-sellbonus%"
-      - "#ffe0c8Value: #e0f0ff$%satchel-value%"
+      - "#ffe0c8Value: #e0f0ff$%satchel-value% &7(#e0f0ffx%satchel-sellbonus%)&7"
       - ""
     enchanted: true
     material: CHEST
     target: STONE
     default-capacity: 5
+    default-sellbonus: 2
   blaze_rod:
     name: "&cBlaze Rod Satchel"
     lore:
       - "&7This Satchel picks up %satchel-target%"
       - ""
       - "#ffe0c8Capacity: #e0f0ff%satchel-contents% &7/ #e0f0ff%satchel-capacity%"
-      - "#ffe0c8Sell Bonus: #e0f0ff%satchel-sellbonus%"
-      - "#ffe0c8Value: #e0f0ff$%satchel-value%"
+      - "#ffe0c8Value: #e0f0ff$%satchel-value% &7(#e0f0ffx%satchel-sellbonus%)&7"
       - ""
     enchanted: true
     material: BLAZE_ROD
     target: BLAZE_ROD
     default-capacity: 10
-
+    default-sellbonus: 1
 messages:
   on-give:
     sender: "%prefix% #9CD5F2You have given %satchel% #9CD5F2to &f%player%!#9CD5F2"
@@ -41,6 +40,9 @@ messages:
   on-sell:
     success: "%prefix% #9CD5F2You have sold &f%satchel-contents% items #9CD5F2and made &f$%satchel-value%#9CD5F2!"
     fail: "%prefix% #9CD5F2You have nothing to sell!"
+  on-upgrade:
+    success: "%prefix% #9CD5F2You have upgraded your &r%satchel%'s &fCapacity %satchel-capacity.old% &7-> &f%satchel-capacity.new% #9CD5F2!"
+    fail: "%prefix% #9CD5F2You do not have enough money for this upgrade!"
 
 menus:
   satchel:
@@ -65,7 +67,7 @@ menus:
           - "&7Click to collect an amount of items"
           - "&7from this satchel."
           - ""
-          - "&7» &fClick To &b&nWithdraw&r &7«"
+          - "&7» &fClick To &b&nCollect&r &7«"
         enchanted: false
         material: PAPER
         action: "COLLECT"
@@ -99,7 +101,7 @@ menus:
         lore:
           - ""
           - "&7Contents: &f%satchel-contents%"
-          - "&7Amount: &f%amount%"
+          - "&7Withdrawing: &f%amount%"
           - ""
         enchanted: false
         material: "%satchel-item.material%"

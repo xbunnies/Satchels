@@ -4,6 +4,7 @@ import me.bunnie.satchels.Satchels;
 import me.bunnie.satchels.events.SatchelCollectEvent;
 import me.bunnie.satchels.events.SatchelSellEvent;
 import me.bunnie.satchels.events.SatchelToggleEvent;
+import me.bunnie.satchels.events.SatchelUpgradeEvent;
 import me.bunnie.satchels.satchel.Satchel;
 import me.bunnie.satchels.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -110,15 +111,14 @@ public class SatchelListener implements Listener {
         }
     }
 
+
     @EventHandler
     public void onSell(SatchelSellEvent event) {
         Player player = event.getPlayer();
-        PlayerInventory inventory = player.getInventory();
         Satchel satchel = event.getSatchel();
-        if (satchel == null) return;
 
         for (int i = 0; i < 9; i++) {
-            ItemStack item = inventory.getItem(i);
+            ItemStack item = player.getInventory().getItem(i);
             if (item == null || item.getType() == Material.AIR) {
                 continue;
             }
@@ -130,15 +130,15 @@ public class SatchelListener implements Listener {
 
             if (satchel.getId().equals(foundSatchel.getId())) {
                 if (satchel.getContents() > 0) {
-                    if(plugin.getEconomyProvider() == null || plugin.getValueProvider() == null) {
+                    if (plugin.getEconomyProvider() == null || plugin.getValueProvider() == null) {
                         player.sendMessage(ChatUtils.format("&cUnable to find a valid Economy OR Value Provider."));
                         return;
                     }
-                    plugin.getEconomyProvider().deposit(player, satchel.getValue());
+                    plugin.getEconomyProvider().deposit(player, satchel.getValue() * satchel.getSellBonus());
                     String message = plugin.getConfig().getString("messages.on-sell.success")
                             .replace("%satchel%", satchel.getDisplayName())
                             .replace("%satchel-contents%", String.valueOf(satchel.getContents()))
-                            .replace("%satchel-value%", String.valueOf(satchel.getValue()))
+                            .replace("%satchel-value%", String.valueOf(satchel.getValue() * satchel.getSellBonus()))
                             .replace("%prefix%", plugin.getPrefix());
                     player.sendMessage(ChatUtils.format(message));
                     satchel.setContents(0);
@@ -149,10 +149,60 @@ public class SatchelListener implements Listener {
                             .replace("%prefix%", plugin.getPrefix());
                     player.sendMessage(ChatUtils.format(message));
                 }
+                break;
             }
-            break;
         }
     }
+
+    @EventHandler
+    public void onUpgrade(SatchelUpgradeEvent event) {
+        Player player = event.getPlayer();
+        Satchel satchel = event.getSatchel();
+        double playerBalance = plugin.getEconomyProvider().getPlayerBalance(player);
+        double cost = satchel.getNextCapacityPrice();
+
+        if (satchel.getNextCapacityPrice() == -1) return;
+
+        boolean upgraded = false;
+
+        if (playerBalance >= cost) {
+            for (int i = 0; i < 9; i++) {
+                ItemStack item = player.getInventory().getItem(i);
+                if (item == null || item.getType() == Material.AIR) {
+                    continue;
+                }
+
+                Satchel foundSatchel = Satchel.fromItemStack(item);
+                if (foundSatchel == null) {
+                    continue;
+                }
+
+                if (satchel.getId().equals(foundSatchel.getId())) {
+                    String message = plugin.getConfig().getString("messages.on-upgrade.success")
+                            .replace("%satchel%", satchel.getDisplayName())
+                            .replace("%satchel-capacity.old%", String.valueOf(satchel.getCapacity()))
+                            .replace("%satchel-capacity.new%", String.valueOf(satchel.getNextCapacity()))
+                            .replace("%prefix%", plugin.getPrefix());
+                    player.sendMessage(ChatUtils.format(message));
+                    plugin.getEconomyProvider().withdraw(player, cost);
+                    satchel.setCapacity(satchel.getNextCapacity());
+                    player.getInventory().setItem(i, satchel.toItemStack());
+                    upgraded = true;
+                    break;
+                }
+            }
+
+            if (!upgraded) {
+                player.sendMessage(ChatUtils.format("&cSatchel not found."));
+            }
+        } else {
+            String message = plugin.getConfig().getString("messages.on-upgrade.fail")
+                    .replace("%satchel%", satchel.getDisplayName())
+                    .replace("%prefix%", plugin.getPrefix());
+            player.sendMessage(ChatUtils.format(message));
+        }
+    }
+
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {

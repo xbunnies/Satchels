@@ -2,6 +2,7 @@ package me.bunnie.satchels.ui;
 
 import me.bunnie.satchels.Satchels;
 import me.bunnie.satchels.events.SatchelSellEvent;
+import me.bunnie.satchels.events.SatchelUpgradeEvent;
 import me.bunnie.satchels.satchel.Satchel;
 import me.bunnie.satchels.ui.action.Action;
 import me.bunnie.satchels.utils.ChatUtils;
@@ -59,9 +60,15 @@ public class SatchelMenu extends Menu {
                     for(String s : toReplace) {
                         s = s.replace("%satchel-contents%", String.valueOf(satchel.getContents()));
                         s = s.replace("%satchel-capacity%", String.valueOf(satchel.getCapacity()));
-                        s = s.replace("%satchel-capacity.next%", String.valueOf(satchel.getNextCapacity()));
-                        s = s.replace("%satchel-capacity.next-price%", DECIMAL_FORMAT.format(satchel.getNextCapacityPrice()));
-                        s = s.replace("%satchel-value%", String.valueOf(satchel.getValue()));
+                        if(satchel.getNextCapacity() == -1) {
+                            s = s.replace("%satchel-capacity.next%", "N/A");
+                            s = s.replace("%satchel-capacity.next-price%", "0");
+                        } else {
+                            s = s.replace("%satchel-capacity.next%", String.valueOf(satchel.getNextCapacity()));
+                            s = s.replace("%satchel-capacity.next-price%", DECIMAL_FORMAT.format(satchel.getNextCapacityPrice()));
+                        }
+                        s = s.replace("%satchel-value%", String.valueOf(satchel.getValue() * satchel.getSellBonus()));
+
                         lore.add(s);
                     }
                     return new ItemBuilder(material)
@@ -81,6 +88,7 @@ public class SatchelMenu extends Menu {
                             update(player, SatchelMenu.this);
                         }
                         case UPGRADE -> {
+                            plugin.getServer().getPluginManager().callEvent(new SatchelUpgradeEvent(player, satchel));
                             update(player, SatchelMenu.this);
                         }
                         case COLLECT -> {
@@ -92,6 +100,18 @@ public class SatchelMenu extends Menu {
                 }
             });
         }
+
+        for (int i = 0; i < getSize(player); i++) {
+            if(buttons.get(i) == null) {
+                buttons.put(i, new Button() {
+                    @Override
+                    public ItemStack getItem(Player player) {
+                        return new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE).setName(" ").build();
+                    }
+                });
+            }
+        }
+
         return buttons;
     }
 

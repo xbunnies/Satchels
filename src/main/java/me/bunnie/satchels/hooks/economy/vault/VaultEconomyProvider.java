@@ -2,7 +2,6 @@ package me.bunnie.satchels.hooks.economy.vault;
 
 import me.bunnie.satchels.Satchels;
 import me.bunnie.satchels.hooks.economy.EconomyProvider;
-import me.bunnie.satchels.hooks.value.ValueProvider;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -25,5 +24,15 @@ public class VaultEconomyProvider implements EconomyProvider {
     @Override
     public void deposit(Player player, double amount) {
         economy.depositPlayer(player, amount);
+    }
+
+    @Override
+    public double getPlayerBalance(Player player) {
+        return economy.getBalance(player);
+    }
+
+    @Override
+    public void withdraw(Player player, double amount) {
+        economy.withdrawPlayer(player, amount);
     }
 }
