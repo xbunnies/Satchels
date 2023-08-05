@@ -5,37 +5,22 @@ ___
 Sick of your inventory overflowing whilst farming, mining or grinding mobs?
 With the addition of 'Satchels' you can say goodbye to inventory overflow! _as long as your satchel can hold all those items of course_!
 
-## Features ✨
+Satchels will **NOT** work without Vault!
+
+___
+![Features.png](https://i.postimg.cc/7Pg8vTbs/Features.png)
+___
 
 - ✅ No more overflowing inventories. (my inventory is always so messy!)
 - ✅ Upgrade your Satchels capacity and sell bonus!
 - ✅ Create unlimited types of Satchels.
 
-## Installation 📥
+___
+![usage.png](https://i.postimg.cc/HsZWPPS4/usage.png)
+___
 
-1. Download the latest version of Satchels from the [SpiotMC](spigot) page!
-2. Place the downloaded JAR file into your server's plugins folder.
-3. Restart your server to generate the plugin configuration files.
-4. Customize the plugin settings in the `config.yml` file as per your preferences.
-5. Start your server, and you're ready to go!
+Obtain a Satchel via the command `/satchels give <player> <type>` (satchels.commands.admin)
+Right-Click to activate the Satchel (this plugin was made with the intention for the satchel to stay in the hotbar)
+Shift Right-Click the Satchel to open up the management menu, this allows you to withdraw and sell the contents of your satchel as well as upgrades!
 
-## Usage 📖
-
-1. Obtain a Satchel via the command `/satchels give <player> <type>`
-2. Pick up any item that the set Satchel can hold. _no more worries about losing that valuable loot!_
-3. Shift Right-Click the Satchel to open up the management menu, this allows you to withdraw and sell the contents of your satchel as well as upgrades!
-4. Continue to enjoy the clutter-free inventory whilst you use your Satchel!
-
-## Commands and Permissions 🔒
-_Administrative Permission for commands below `satchels.commands.admin`_
-
-- `/satchel give <player> <type>` - Gives the Satchel to a player.
-- 
-
-## Configuration 🛠️
-
-The `config.yml` file allows you to customize various aspects of the plugin!
-
-## License 📜
-
-Satchels is released under the [MIT License](https://github.com/xbunnies/Satchels/blob/master/LICENSE). 
+Continue to enjoy the clutter-free inventory whilst you use your Satchel!
