@@ -1,5 +1,8 @@
 name: Satchels
 version: '${project.version}'
 main: me.bunnie.satchels.Satchels
+description: Remove inventory clutter with the use of Satchels!
+author: xbunnies
 api-version: '1.20'
 depend: [Vault]
+softdepend: [ShopGUIPlus, EconomyShopGUI, EconomyShopGUI-Premium]

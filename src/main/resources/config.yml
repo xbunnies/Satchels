@@ -1,5 +1,6 @@
 settings:
   prefix: "#ffd8e0&l[#ffdadb&lS#ffdcd5&la#ffddd0&lt#ffdfcb&lc#ffdfcb&lh#ffddd0&le#ffdcd5&ll#ffdadb&ls#ffd8e0&l]"
+  value-hook: Satchels #Options: Satchels, ShopGUIPlus and EconomyShopGUI
 
 satchels:
   stone:

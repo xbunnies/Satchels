@@ -13,7 +13,7 @@ public class DefaultValueProvider implements ValueProvider {
 
     public DefaultValueProvider(Satchels plugin) {
         this.plugin = plugin;
-        plugin.getLogger().info("Could not find any other ValueProvider enabling DefaultValueProvider...");
+        plugin.getLogger().info("Using Satchels for ValueProvider");
     }
 
     @Override

@@ -5,6 +5,7 @@ import me.bunnie.satchels.commands.SatchelsCommand;
 import me.bunnie.satchels.hooks.economy.EconomyProvider;
 import me.bunnie.satchels.hooks.economy.vault.VaultEconomyProvider;
 import me.bunnie.satchels.hooks.value.ValueProvider;
+import me.bunnie.satchels.hooks.value.esgui.ESGUIValueProvider;
 import me.bunnie.satchels.hooks.value.satchels.DefaultValueProvider;
 import me.bunnie.satchels.hooks.value.sgui.SGUIValueProvider;
 import me.bunnie.satchels.listeners.PlayerListener;
@@ -49,10 +50,24 @@ public final class Satchels extends JavaPlugin {
             getPluginLoader().disablePlugin(this);
         }
 
-        if(Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
-            valueProvider = new SGUIValueProvider(this);
-        } else {
-            valueProvider = new DefaultValueProvider(this);
+        switch (getValueHook().toLowerCase()) {
+            case "shopguiplus" ->  {
+                if(Bukkit.getPluginManager().isPluginEnabled("ShopGUIPlus")) {
+                    valueProvider = new SGUIValueProvider(this);
+                } else {
+                    getLogger().warning("Unable to find ShopGUIPlus within the enabled plugins! Disabling Plugin...");
+                    getPluginLoader().disablePlugin(this);
+                }
+            }
+            case "economyshopgui" -> {
+                if(Bukkit.getPluginManager().isPluginEnabled("EconomyShopGUI")) {
+                    valueProvider = new ESGUIValueProvider(this);
+                } else {
+                    getLogger().warning("Unable to find EconomyShopGUI within the enabled plugins! Disabling Plugin...");
+                    getPluginLoader().disablePlugin(this);
+                }
+            }
+            case "satchels" -> valueProvider = new DefaultValueProvider(this);
         }
     }
 
@@ -77,8 +92,13 @@ public final class Satchels extends JavaPlugin {
         new SatchelsCommand(this);
     }
 
+
+    private String getValueHook() {
+        return getConfigYML().getString("settings.value-hook");
+    }
+
     public String getPrefix() {
-        return ChatUtils.format(getConfig().getString("settings.prefix"));
+        return ChatUtils.format(getConfigYML().getString("settings.prefix"));
     }
 
 

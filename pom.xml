@@ -6,7 +6,7 @@
 
     <groupId>me.bunnie</groupId>
     <artifactId>Satchels</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>Satchels</name>
@@ -90,6 +90,12 @@
             <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.Gypopo</groupId>
+            <artifactId>EconomyShopGUI-API</artifactId>
+            <version>1.6.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
