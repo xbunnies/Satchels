@@ -6,6 +6,8 @@ public enum Action {
     UPGRADE,
     SELL,
 
+    OPEN_UPGRADES,
+
     CLOSE_MENU,
 
     INCREASE_AMOUNT,

@@ -4,8 +4,8 @@ capacity:
   10:
     price: 10000
 
-sell-bonus:
-  1.0:
+sellbonus:
+  1-0:
     price: 0
-  1.1:
+  1-1:
     price: 10000
