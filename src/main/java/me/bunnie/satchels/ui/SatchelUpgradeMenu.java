@@ -4,6 +4,7 @@ import me.bunnie.satchels.Satchels;
 import me.bunnie.satchels.events.SatchelSellEvent;
 import me.bunnie.satchels.events.SatchelUpgradeEvent;
 import me.bunnie.satchels.satchel.Satchel;
+import me.bunnie.satchels.satchel.upgrade.UpgradeType;
 import me.bunnie.satchels.ui.action.Action;
 import me.bunnie.satchels.utils.ChatUtils;
 import me.bunnie.satchels.utils.ItemBuilder;
@@ -20,13 +21,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SatchelMenu extends Menu {
+public class SatchelUpgradeMenu extends Menu {
 
     private final Satchels plugin;
     private final Satchel satchel;
     private final DecimalFormat DECIMAL_FORMAT;
 
-    public SatchelMenu(Satchel satchel) {
+    public SatchelUpgradeMenu(Satchel satchel) {
         this.satchel = satchel;
         this.plugin = Satchels.getInstance();
         this.DECIMAL_FORMAT = new DecimalFormat("#,###.#");
@@ -36,15 +37,15 @@ public class SatchelMenu extends Menu {
     @Override
     public String getTitle(Player player) {
         return ChatUtils.format(
-                plugin.getConfigYML().getString("menus.satchel.title")
+                plugin.getConfigYML().getString("menus.upgrade.title")
                         .replace("%satchel-name%", satchel.getDisplayName()));
     }
 
     @Override
     public Map<Integer, Button> getButtons(Player player) {
         Map<Integer, Button> buttons = new HashMap<>();
-        for(String key : plugin.getConfig().getConfigurationSection("menus.satchel.buttons").getKeys(false)) {
-            String path = "menus.satchel.buttons." + key;
+        for(String key : plugin.getConfig().getConfigurationSection("menus.upgrade.buttons").getKeys(false)) {
+            String path = "menus.upgrade.buttons." + key;
             int slot = plugin.getConfig().getInt(path + ".slot");
 
             buttons.put(slot, new Button() {
@@ -60,6 +61,7 @@ public class SatchelMenu extends Menu {
                     for(String s : toReplace) {
                         s = s.replace("%satchel-contents%", String.valueOf(satchel.getContents()));
                         s = s.replace("%satchel-capacity%", String.valueOf(satchel.getCapacity()));
+                        s = s.replace("%satchel-sellbonus%", String.valueOf(satchel.getSellBonus()));
                         if(satchel.getNextCapacity() == -1) {
                             s = s.replace("%satchel-capacity.next%", "N/A");
                             s = s.replace("%satchel-capacity.next-price%", "0");
@@ -67,6 +69,15 @@ public class SatchelMenu extends Menu {
                             s = s.replace("%satchel-capacity.next%", String.valueOf(satchel.getNextCapacity()));
                             s = s.replace("%satchel-capacity.next-price%", DECIMAL_FORMAT.format(satchel.getNextCapacityPrice()));
                         }
+
+                        if(satchel.getNextSB() == satchel.getSellBonus()) {
+                            s = s.replace("%satchel-sellbonus.next%", "N/A");
+                            s = s.replace("%satchel-sellbonus.next-price%", "0");
+                        } else {
+                            s = s.replace("%satchel-sellbonus.next%", String.valueOf(satchel.getNextSB()));
+                            s = s.replace("%satchel-sellbonus.next-price%", DECIMAL_FORMAT.format(satchel.getNextSBPrice()));
+                        }
+
                         s = s.replace("%satchel-value%", String.valueOf(satchel.getValue() * satchel.getSellBonus()));
 
                         lore.add(s);
@@ -80,20 +91,18 @@ public class SatchelMenu extends Menu {
 
                 @Override
                 public void onButtonClick(Player player, int slot, ClickType clickType) {
-                    String actionName = plugin.getConfig().getString(path + ".action");
+                    String actionString = plugin.getConfig().getString(path + ".action");
+                    String[] actionArray = actionString.split(":");
+                    String actionName = actionArray[0];
+                    String upgradeName = actionArray[1];
+
                     Action action = Action.valueOf(actionName);
+                    UpgradeType upgrade = UpgradeType.valueOf(upgradeName);
                     switch (action) {
-                        case SELL -> {
-                            plugin.getServer().getPluginManager().callEvent(new SatchelSellEvent(player, satchel));
-                            update(player, SatchelMenu.this);
-                        }
-                        case OPEN_UPGRADES -> {
-                            player.closeInventory();
-                            new SatchelUpgradeMenu(satchel).getInventory(player);
-                        }
-                        case COLLECT -> {
-                            player.closeInventory();
-                            new ItemCollectMenu(satchel).getInventory(player);
+                        case UPGRADE -> {
+
+                            plugin.getServer().getPluginManager().callEvent(new SatchelUpgradeEvent(player, satchel, upgrade));
+                            update(player, SatchelUpgradeMenu.this);
                         }
                         case CLOSE_MENU -> player.closeInventory();
                     }
@@ -117,6 +126,6 @@ public class SatchelMenu extends Menu {
 
     @Override
     public int getSize(Player player) {
-        return plugin.getConfigYML().getInt("menus.satchel.size");
+        return plugin.getConfigYML().getInt("menus.upgrade.size");
     }
 }

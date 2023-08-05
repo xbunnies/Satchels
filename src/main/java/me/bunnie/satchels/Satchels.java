@@ -15,6 +15,7 @@ import me.bunnie.satchels.utils.ChatUtils;
 import me.bunnie.satchels.utils.Config;
 import me.bunnie.satchels.utils.ui.listener.MenuListener;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
@@ -35,6 +36,7 @@ public final class Satchels extends JavaPlugin {
         registerHooks();
         registerListeners();
         registerCommands();
+        a();
     }
 
     @Override
@@ -102,5 +104,31 @@ public final class Satchels extends JavaPlugin {
     }
 
 
+    public void a() {
+        ConfigurationSection sellBonusSection = Satchels.getInstance().getUpgradesYML().getConfigurationSection("sellbonus");
+        if (sellBonusSection == null) {
+            return;
+        }
+
+        double highestSellBonus = -1;
+
+        for (String key : sellBonusSection.getKeys(false)) {
+            String[] parts = key.split("-");
+            if (parts.length != 2) {
+                continue;
+            }
+
+            int major = Integer.parseInt(parts[0]);
+            int minor = Integer.parseInt(parts[1]);
+
+            double sellBonus = major + (minor / 10.0);
+
+            if (sellBonus > highestSellBonus ) {
+                highestSellBonus = sellBonus;
+            }
+        }
+
+        System.out.println(highestSellBonus);
+    }
 
 }

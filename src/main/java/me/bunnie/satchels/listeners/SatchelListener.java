@@ -6,6 +6,7 @@ import me.bunnie.satchels.events.SatchelSellEvent;
 import me.bunnie.satchels.events.SatchelToggleEvent;
 import me.bunnie.satchels.events.SatchelUpgradeEvent;
 import me.bunnie.satchels.satchel.Satchel;
+import me.bunnie.satchels.satchel.upgrade.UpgradeType;
 import me.bunnie.satchels.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -159,9 +160,15 @@ public class SatchelListener implements Listener {
         Player player = event.getPlayer();
         Satchel satchel = event.getSatchel();
         double playerBalance = plugin.getEconomyProvider().getPlayerBalance(player);
-        double cost = satchel.getNextCapacityPrice();
+        double cost = -1;
 
-        if (satchel.getNextCapacityPrice() == -1) return;
+        if(event.getUpgrade() == UpgradeType.CAPACITY) {
+            cost = satchel.getNextCapacityPrice();
+            if (satchel.getNextCapacityPrice() == -1) return;
+        } else if(event.getUpgrade() == UpgradeType.SELLBONUS) {
+            cost = satchel.getNextSBPrice();
+            if (satchel.getNextSB() == -1) return;
+        }
 
         boolean upgraded = false;
 
@@ -178,16 +185,39 @@ public class SatchelListener implements Listener {
                 }
 
                 if (satchel.getId().equals(foundSatchel.getId())) {
-                    String message = plugin.getConfig().getString("messages.on-upgrade.success")
-                            .replace("%satchel%", satchel.getDisplayName())
-                            .replace("%satchel-capacity.old%", String.valueOf(satchel.getCapacity()))
-                            .replace("%satchel-capacity.new%", String.valueOf(satchel.getNextCapacity()))
-                            .replace("%prefix%", plugin.getPrefix());
-                    player.sendMessage(ChatUtils.format(message));
-                    plugin.getEconomyProvider().withdraw(player, cost);
-                    satchel.setCapacity(satchel.getNextCapacity());
-                    player.getInventory().setItem(i, satchel.toItemStack());
-                    upgraded = true;
+
+                    String message;
+                    switch (event.getUpgrade()) {
+                        case CAPACITY -> {
+                            message = plugin.getConfig().getString("messages.on-upgrade.success")
+                                    .replace("%satchel%", satchel.getDisplayName())
+                                    .replace("%value-old%", String.valueOf(satchel.getCapacity()))
+                                    .replace("%value-new%", String.valueOf(satchel.getNextCapacity()))
+                                    .replace("%value-type%", event.getUpgrade().name())
+                                    .replace("%prefix%", plugin.getPrefix());
+                            satchel.setCapacity(satchel.getNextCapacity());
+
+                            player.sendMessage(ChatUtils.format(message));
+                            plugin.getEconomyProvider().withdraw(player, cost);
+                            player.getInventory().setItem(i, satchel.toItemStack());
+                            upgraded = true;
+                        }
+                        case SELLBONUS -> {
+                            if(satchel.getNextSB() == satchel.getSellBonus()) return;
+                            message = plugin.getConfig().getString("messages.on-upgrade.success")
+                                    .replace("%satchel%", satchel.getDisplayName())
+                                    .replace("%value-old%", String.valueOf(satchel.getSellBonus()))
+                                    .replace("%value-new%", String.valueOf(satchel.getNextSB()))
+                                    .replace("%value-type%", event.getUpgrade().name())
+                                    .replace("%prefix%", plugin.getPrefix());
+                            satchel.setSellBonus(satchel.getNextSB());
+
+                            player.sendMessage(ChatUtils.format(message));
+                            plugin.getEconomyProvider().withdraw(player, cost);
+                            player.getInventory().setItem(i, satchel.toItemStack());
+                            upgraded = true;
+                        }
+                    }
                     break;
                 }
             }

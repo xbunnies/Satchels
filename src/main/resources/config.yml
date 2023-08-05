@@ -15,7 +15,7 @@ satchels:
     material: CHEST
     target: STONE
     default-capacity: 5
-    default-sellbonus: 2
+    default-sellbonus: 1
   blaze_rod:
     name: "&cBlaze Rod Satchel"
     lore:
@@ -29,6 +29,7 @@ satchels:
     target: BLAZE_ROD
     default-capacity: 10
     default-sellbonus: 1
+
 messages:
   on-give:
     sender: "%prefix% #9CD5F2You have given %satchel% #9CD5F2to &f%player%!#9CD5F2"
@@ -42,7 +43,7 @@ messages:
     success: "%prefix% #9CD5F2You have sold &f%satchel-contents% items #9CD5F2and made &f$%satchel-value%#9CD5F2!"
     fail: "%prefix% #9CD5F2You have nothing to sell!"
   on-upgrade:
-    success: "%prefix% #9CD5F2You have upgraded your &r%satchel%'s &fCapacity %satchel-capacity.old% &7-> &f%satchel-capacity.new% #9CD5F2!"
+    success: "%prefix% #9CD5F2You have upgraded your &r%satchel%'s &f%value-type% %value-old% &7-> &f%value-new%#9CD5F2!"
     fail: "%prefix% #9CD5F2You do not have enough money for this upgrade!"
 
 menus:
@@ -55,12 +56,11 @@ menus:
         lore:
           - ""
           - "&d&l- &fContents: %satchel-contents% / %satchel-capacity%"
-          - "&d&l- &fUpgrade: %satchel-capacity% &7&l» &f%satchel-capacity.next% &7(&fCost: $%satchel-capacity.next-price%&7)"
           - ""
-          - "&7» &fClick To &e&nUpgrade&r &7«"
+          - "&7» &fClick To View &e&nUpgrade&r &7«"
         enchanted: false
         material: "%satchel-item.material%"
-        action: "UPGRADE"
+        action: "OPEN_UPGRADES"
         slot: 4
       collect:
         name: "&bCollect"
@@ -115,3 +115,31 @@ menus:
         material: RED_WOOL
         slot: [6,7,8,15,16,17,24,25,26]
         action: "CLOSE_MENU"
+  upgrade:
+    title: "%satchel-name%"
+    size: 9
+    buttons:
+      capacity:
+        name: "&eCapacity"
+        lore:
+          - ""
+          - "&d&l- &fCurrent Bonus: %satchel-capacity%"
+          - "&d&l- &fNext Bonus: %satchel-capacity.next% &7(&fCost: $%satchel-capacity.next-price%&7)"
+          - ""
+          - "&7» &fClick To &e&nUpgrade&r &7«"
+        material: CHEST
+        enchanted: false
+        action: "UPGRADE:CAPACITY"
+        slot: 3
+      sell-bonus:
+        name: "&aSell Bonus"
+        lore:
+          - ""
+          - "&d&l- &fCurrent Bonus: %satchel-sellbonus%"
+          - "&d&l- &fNext Bonus: %satchel-sellbonus.next% &7(&fCost: $%satchel-sellbonus.next-price%&7)"
+          - ""
+          - "&7» &fClick To &a&nUpgrade&r &7«"
+        material: DIAMOND
+        enchanted: false
+        action: "UPGRADE:SELLBONUS"
+        slot: 5

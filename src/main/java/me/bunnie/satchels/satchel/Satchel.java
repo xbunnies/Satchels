@@ -7,6 +7,7 @@ import me.bunnie.satchels.utils.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -33,27 +34,6 @@ public class Satchel {
         this.sellBonus = 1.0;
     }
 
-    public int getNextCapacity() {
-        for(String key : Satchels.getInstance().getUpgradesYML().getConfigurationSection("capacity").getKeys(false)) {
-            int nextCap = Integer.parseInt(key);
-            if(nextCap > capacity) {
-                return nextCap;
-            }
-        }
-        return -1;
-    }
-
-    public double getNextCapacityPrice() {
-        for(String key : Satchels.getInstance().getUpgradesYML().getConfigurationSection("capacity").getKeys(false)) {
-            int nextCap = Integer.parseInt(key);
-            int price = Satchels.getInstance().getUpgradesYML().getInt("capacity." + key + ".price");
-            if(nextCap > capacity) {
-                return price;
-            }
-        }
-        return -1;
-    }
-
     public String getDisplayName() {
         ItemMeta itemMeta = toItemStack().getItemMeta();
         if(itemMeta == null) {
@@ -72,7 +52,6 @@ public class Satchel {
             s = s.replace("%satchel-sellbonus%", String.valueOf(sellBonus));
             s = s.replace("%satchel-target%", targetMaterial.name());
             s = s.replace("%satchel-value%", String.valueOf(getValue() * getSellBonus()));
-
 
             lore.add(s);
         }
@@ -113,6 +92,87 @@ public class Satchel {
         return satchel;
     }
 
+
+    public int getNextCapacity() {
+        ConfigurationSection capacitySection = Satchels.getInstance().getUpgradesYML().getConfigurationSection("capacity");
+        if (capacitySection == null) {
+            return -1;
+        }
+
+        int highestCapacity = -1;
+
+        for (String key : capacitySection.getKeys(false)) {
+            int nextCap = Integer.parseInt(key);
+            if (nextCap > capacity && nextCap > highestCapacity) {
+                highestCapacity = nextCap;
+            }
+        }
+
+        return highestCapacity;
+    }
+
+    public double getNextSB() {
+        ConfigurationSection sellBonusSection = Satchels.getInstance().getUpgradesYML().getConfigurationSection("sellbonus");
+        if (sellBonusSection == null) {
+            return -1;
+        }
+
+        double highestSellBonus = -1;
+
+        for (String key : sellBonusSection.getKeys(false)) {
+            String[] parts = key.split("-");
+            if (parts.length != 2) {
+                continue;
+            }
+
+            int major = Integer.parseInt(parts[0]);
+            int minor = Integer.parseInt(parts[1]);
+
+            double sellBonus = major + (minor / 10.0);
+
+            if (sellBonus > highestSellBonus) {
+                highestSellBonus = sellBonus;
+            }
+        }
+
+        return highestSellBonus;
+    }
+
+    public double getNextSBPrice() {
+        ConfigurationSection sellBonusSection = Satchels.getInstance().getUpgradesYML().getConfigurationSection("sellbonus");
+        if (sellBonusSection == null) {
+            return -1;
+        }
+
+        double highestSellBonusPrice = -1;
+
+        for (String key : sellBonusSection.getKeys(false)) {
+            double price = sellBonusSection.getDouble(key + ".price");
+            if (price > highestSellBonusPrice) {
+                highestSellBonusPrice = price;
+            }
+        }
+
+        return highestSellBonusPrice;
+    }
+
+
+    public double getNextCapacityPrice() {
+        ConfigurationSection capacitySection = Satchels.getInstance().getUpgradesYML().getConfigurationSection("capacity");
+        if (capacitySection == null) {
+            return -1;
+        }
+
+        for (String key : capacitySection.getKeys(false)) {
+            int nextCap = Integer.parseInt(key);
+            double price = capacitySection.getDouble(key + ".price");
+            if (nextCap > capacity) {
+                return price;
+            }
+        }
+
+        return -1;
+    }
 
     public double getValue() {
         return contents * Satchels.getInstance().getValueProvider().getItemValue(new ItemStack(targetMaterial));
