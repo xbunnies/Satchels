@@ -13,12 +13,15 @@ import me.bunnie.satchels.listeners.SatchelListener;
 import me.bunnie.satchels.satchel.SatchelManager;
 import me.bunnie.satchels.utils.ChatUtils;
 import me.bunnie.satchels.utils.Config;
+import me.bunnie.satchels.utils.Metrics;
+import me.bunnie.satchels.utils.UpdateUtils;
 import me.bunnie.satchels.utils.ui.listener.MenuListener;
+
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
+import java.util.logging.Level;
 
 public final class Satchels extends JavaPlugin {
 
@@ -31,17 +34,38 @@ public final class Satchels extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        init();
         registerConfigurations();
         registerManagers();
         registerHooks();
         registerListeners();
         registerCommands();
-        a();
     }
 
     @Override
     public void onDisable() {
         instance = null;
+    }
+
+    private void init() {
+        new UpdateUtils(this, 111759).getLatestVersion(version -> {
+            if(!getDescription().getVersion().equalsIgnoreCase(version)) {
+                getLogger().log(Level.SEVERE, "You are using an outdated version! (" + getDescription().getVersion() + ")");
+                getLogger().log(Level.SEVERE, "Please update to the newest version for bug patches and newly added features! (" + version + ")" );
+            }
+        });
+        new Metrics(this, 19411);
+    }
+
+    private void registerConfigurations() {
+        configYML = new Config(this, "config", getDataFolder().getAbsolutePath());
+        upgradesYML = new Config(this, "upgrades", getDataFolder().getAbsolutePath());
+        valuesYML = new Config(this, "values", getDataFolder().getAbsolutePath());
+    }
+
+    private void registerManagers() {
+        saveDefaultConfig();
+        satchelManager = new SatchelManager(this);
     }
 
     private void registerHooks() {
@@ -73,19 +97,8 @@ public final class Satchels extends JavaPlugin {
         }
     }
 
-    private void registerConfigurations() {
-        configYML = new Config(this, "config", getDataFolder().getAbsolutePath());
-        upgradesYML = new Config(this, "upgrades", getDataFolder().getAbsolutePath());
-        valuesYML = new Config(this, "values", getDataFolder().getAbsolutePath());
-    }
-
-    private void registerManagers() {
-        saveDefaultConfig();
-        satchelManager = new SatchelManager(this);
-    }
-
     private void registerListeners() {
-        Arrays.asList(new PlayerListener(), new SatchelListener(this),
+        Arrays.asList(new PlayerListener(this), new SatchelListener(this),
                 new MenuListener()).forEach(listener -> getServer().getPluginManager().registerEvents(listener, this));
     }
 
@@ -101,34 +114,6 @@ public final class Satchels extends JavaPlugin {
 
     public String getPrefix() {
         return ChatUtils.format(getConfigYML().getString("settings.prefix"));
-    }
-
-
-    public void a() {
-        ConfigurationSection sellBonusSection = Satchels.getInstance().getUpgradesYML().getConfigurationSection("sellbonus");
-        if (sellBonusSection == null) {
-            return;
-        }
-
-        double highestSellBonus = -1;
-
-        for (String key : sellBonusSection.getKeys(false)) {
-            String[] parts = key.split("-");
-            if (parts.length != 2) {
-                continue;
-            }
-
-            int major = Integer.parseInt(parts[0]);
-            int minor = Integer.parseInt(parts[1]);
-
-            double sellBonus = major + (minor / 10.0);
-
-            if (sellBonus > highestSellBonus ) {
-                highestSellBonus = sellBonus;
-            }
-        }
-
-        System.out.println(highestSellBonus);
     }
 
 }
